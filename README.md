@@ -1,5 +1,7 @@
 # ReDOWN
 
+*Work in Progress*
+
 **A drop-in replacement for [LevelDOWN](https://github.com/rvagg/node-leveldown) that works with redis. Can be used as a back-end for [LevelUP](https://github.com/rvagg/node-levelup) rather than an actual LevelDB store.**
 
 *Note: the above tests include the use of `TypedArray`s. If you don't use them then you can likely ignore the failures.*
