@@ -90,7 +90,7 @@ function ReDOWN (location) {
   var redis_url = require("url").parse(process.env.REDIS || process.env.REDISTOGO_URL);
             
   this._client  = redis.createClient(redis_url.port, redis_url.hostname);
-  if (redis_url.auth) this._client(redis_url.auth.split(":")[1]); 
+  if (redis_url.auth) this._client.auth(redis_url.auth.split(":")[1]); 
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
