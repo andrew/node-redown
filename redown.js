@@ -87,7 +87,7 @@ function ReDOWN (location) {
   AbstractLevelDOWN.call(this, "/tmp/db.tmp");
   this._store = {}
   this._keys  = []
-  this._client = location;
+  this._client = (typeof location === 'object' && Array.isArray(location)) ? require('redis').createClient.apply(null, location) : location;
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
