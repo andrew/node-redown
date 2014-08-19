@@ -84,13 +84,10 @@ function ReDOWN (location) {
   if (!(this instanceof ReDOWN))
     return new ReDOWN(location)
 
-  AbstractLevelDOWN.call(this, typeof location == 'string' ? location : '')
+  AbstractLevelDOWN.call(this, "/tmp/db.tmp");
   this._store = {}
   this._keys  = []
-  var redis_url = require("url").parse(process.env.REDIS || process.env.REDISTOGO_URL);
-            
-  this._client  = redis.createClient(redis_url.port, redis_url.hostname);
-  if (redis_url.auth) this._client.auth(redis_url.auth.split(":")[1]); 
+  this._client = location;
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
