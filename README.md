@@ -1,4 +1,4 @@
-# ReDOWN
+# [ReDOWN](http://libraries.io/npm/redown)
 
 *Work in Progress*
 
