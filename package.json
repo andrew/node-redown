@@ -1,7 +1,7 @@
 {
   "name": "redown",
   "description": "An drop-in replacement for LevelDOWN that works with Redis",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "homepage": "https://github.com/andrew/node-redown",
   "authors": [
     "Andrew Nesbitt <andrewnez@gmail.com> (https://github.com/andrew)"
@@ -20,6 +20,7 @@
   "dependencies": {
     "abstract-leveldown": "~2.1.0",
     "bops": "~0.1.0",
+    "qs": "^2.4.1",
     "redis": "~0.12.1"
   },
   "devDependencies": {

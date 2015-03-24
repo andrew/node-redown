@@ -3,8 +3,10 @@ var util              = require('util')
   , AbstractLevelDOWN = require('abstract-leveldown').AbstractLevelDOWN
   , AbstractIterator  = require('abstract-leveldown').AbstractIterator
   , noop              = function () {}
+  , url = require('url')
   , setImmediate      = global.setImmediate || process.nextTick
-  , redis             = require("redis");
+  , redis             = require("redis")
+  , qs = require('qs');
 
 function toKey (key) {
   return typeof key == 'string' ? key : JSON.stringify(key)
@@ -88,12 +90,34 @@ function ReDOWN (location) {
   this._store = {}
   this._keys  = []
 
+  if (typeof(location) !== 'string') return;
+  try {
+    var redis_url = url.parse(location);
+    if (redis_url.protocol === 'redis:') {
+      var opts = (redis_url.query && qs.parse(redis_url.query)) || {};
+      opts.auth_pass = redis_url.auth.split(':').pop();
+      
+      Object.keys(opts).forEach(function (key){
+        opts[key] = parseFloat(opts[key]) || (opts[key] === 'true') || ((opts[key] === 'false') ? false : opts[key]);
+      });
+
+      var options = {
+        host: redis_url.hostname,
+        port: redis_url.port,
+        options: opts
+      };
+
+      this._client = redis.createClient(options.port, options.host, options.opts);
+    }
+  } catch (error) {
+
+  }
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
 
 ReDOWN.prototype._open = function (options, callback) {
-  this._client = ((options.redis instanceof redis.RedisClient) ? options.redis : redis.createClient());
+  this._client = this._client || ((options.redis instanceof redis.RedisClient) ? options.redis : redis.createClient());
   this._client.on('ready', function(){
     callback();
   })

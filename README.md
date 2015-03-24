@@ -17,7 +17,8 @@ var ReDOWN = require('redown')
 
  var redis_client = redis.createClient(6379, 'localhost');  
 
- var db = levelup('does not matter', { db: ReDOWN, redis: redis_client })
+ // Either a connection string or an existing redis instance must be passed, or the driver will connect to localhost
+ var db = levelup('redis://:@localhost:6379?detect_buffers=false', { db: ReDOWN, redis: redis_client })
 
 db.put('name', 'Yuri Irsenovich Kim')
 db.put('dob', '16 February 1941')
