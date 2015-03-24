@@ -12,8 +12,12 @@ As of version 0.7, LevelUP allows you to pass a `'db'` option when you create a 
 
 ```js
 var ReDOWN = require('redown')
-  , levelup = require('levelup')
-  , db = levelup('/does/not/matter', { db: ReDOWN })
+ , levelup = require('levelup')
+ , redis = require('redis');
+
+ var redis_client = redis.createClient(6379, 'localhost');  
+
+ var db = levelup('does not matter', { db: ReDOWN, redis: redis_client })
 
 db.put('name', 'Yuri Irsenovich Kim')
 db.put('dob', '16 February 1941')
