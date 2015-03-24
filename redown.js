@@ -4,7 +4,7 @@ var util              = require('util')
   , AbstractIterator  = require('abstract-leveldown').AbstractIterator
   , noop              = function () {}
   , setImmediate      = global.setImmediate || process.nextTick
-  , redis             = require("redis")
+  , redis             = require("redis");
 
 function toKey (key) {
   return typeof key == 'string' ? key : JSON.stringify(key)
@@ -87,28 +87,34 @@ function ReDOWN (location) {
   AbstractLevelDOWN.call(this, "/tmp/db.tmp");
   this._store = {}
   this._keys  = []
-  this._client = (typeof location === 'object' && Array.isArray(location)) ? require('redis').createClient.apply(null, location) : location;
+
+  if (location instanceof (redis.RedisClient)) {
+    var redis_client = location;
+  } else {
+    var redis_client = redis.createClient();
+  }
+  
+  this._client = redis_client;
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
 
 ReDOWN.prototype._open = function (options, callback) {
   this._client.on('ready', function(){
-    console.log('ready')
-    callback()
+    callback();
   })
 }
 
 ReDOWN.prototype._put = function (key, value, options, callback) {
-  this._client.set(key, value, callback);
+  this._client.set(key, value, (callback || noop));
 }
 
 ReDOWN.prototype._get = function (key, options, callback) {
-  this._client.get(key, callback)
+  this._client.get(key, (callback || noop))
 }
 
 ReDOWN.prototype._del = function (key, options, callback) {
-  this._client.del(key, callback)
+  this._client.del(key, (callback || noop))
 }
 
 ReDOWN.prototype._batch = function (array, options, callback) {
@@ -134,7 +140,7 @@ ReDOWN.prototype._batch = function (array, options, callback) {
       }
     }
   }
-  setImmediate(callback)
+  callback && setImmediate(callback);
 }
 
 ReDOWN.prototype._iterator = function (options) {
