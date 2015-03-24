@@ -88,18 +88,12 @@ function ReDOWN (location) {
   this._store = {}
   this._keys  = []
 
-  if (location instanceof (redis.RedisClient)) {
-    var redis_client = location;
-  } else {
-    var redis_client = redis.createClient();
-  }
-  
-  this._client = redis_client;
 }
 
 util.inherits(ReDOWN, AbstractLevelDOWN)
 
 ReDOWN.prototype._open = function (options, callback) {
+  this._client = ((options.redis instanceof redis.RedisClient) ? options.redis : redis.createClient());
   this._client.on('ready', function(){
     callback();
   })
