@@ -117,7 +117,8 @@ function ReDOWN (location) {
 util.inherits(ReDOWN, AbstractLevelDOWN)
 
 ReDOWN.prototype._open = function (options, callback) {
-  this._client = this._client || ((options.redis instanceof redis.RedisClient) ? options.redis : redis.createClient());
+  this._client = this._client || ((typeof(options.redis) == "object") ? options.redis : redis.createClient());
+
   this._client.on('ready', function(){
     callback();
   })
@@ -145,13 +146,13 @@ ReDOWN.prototype._batch = function (array, options, callback) {
     for (; i < array.length; i++) {
       if (array[i]) {
         key = bops.is(array[i].key) ? array[i].key : String(array[i].key)
-        err = this._checkKeyValue(key, 'key')
+        err = this._checkKey(key, 'key')
         if (err) return setImmediate(function () { callback(err) })
         if (array[i].type === 'del') {
           this._del(array[i].key, options, noop)
         } else if (array[i].type === 'put') {
           value = bops.is(array[i].value) ? array[i].value : String(array[i].value)
-          err = this._checkKeyValue(value, 'value')
+          err = this._checkKey(value, 'value')
           if (err) return setImmediate(function () { callback(err) })
           this._put(key, value, options, noop)
         }
